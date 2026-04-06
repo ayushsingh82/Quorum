@@ -54,6 +54,35 @@ export interface Candle {
     if (tf === "4h") return { timeframe: "hour", aggregate: 4 };
     return { timeframe: "day", aggregate: 1 };
   }
+
+  /** Maps API-style labels (e.g. 1H from config) to internal chart timeframes. */
+  const API_TIMEFRAME_MAP: Record<string, "1h" | "4h" | "1d"> = {
+    "1H": "1h",
+    "4H": "4h",
+    "1D": "1d",
+    "1h": "1h",
+    "4h": "4h",
+    "1d": "1d",
+  };
+
+  /**
+   * OHLCV for a token mint via DexScreener pool resolution + GeckoTerminal.
+   * Named for parity with earlier Birdeye-based sketches; data source is GeckoTerminal.
+   */
+  export async function fetchOHLCV(
+    tokenAddress: string,
+    tfType: string,
+    limit = 120
+  ): Promise<{ candles: Candle[]; poolAddress: string }> {
+    const tf =
+      API_TIMEFRAME_MAP[tfType] ?? API_TIMEFRAME_MAP[tfType.toUpperCase()];
+    if (!tf) {
+      throw new Error(`Unknown timeframe: ${tfType}`);
+    }
+    const { candles, poolAddress } = await fetchLiveTokenData(tokenAddress, tf);
+    const trimmed = candles.length > limit ? candles.slice(-limit) : candles;
+    return { candles: trimmed, poolAddress };
+  }
   
   export async function fetchOHLCVFromGeckoTerminal(
     network: string,
