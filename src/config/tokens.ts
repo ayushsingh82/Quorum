@@ -1,4 +1,3 @@
-// src/config/tokens.ts
 export const TOKENS = [
   {
     symbol: "SOL",
@@ -10,15 +9,15 @@ export const TOKENS = [
   },
   {
     symbol: "GRASS",
-    address: "GRASS7zZ4sZxwzYx8xxxxxxxxxxxxxxxxxxxx", // replace with real mint
+    address: "Grass7B4RdKfBCjTKgSqnXkqjwiGvQyFbuSCUJr3XXjs",
   },
   {
     symbol: "PYTH",
-    address: "HZ1JovNiVvGrGNiiYvQwVdxQwQZo6X6n7f4D8nZr7M7",
+    address: "HZ1JovNiVvGrGNiiYvEozEVgZ58xaU3RKwX8eACQBCt3",
   },
   {
     symbol: "WIF",
-    address: "EKpQGSJtjMFqKZV4kxxxxxxxxxxxxxxxxxxxx", // replace with real mint
+    address: "EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm",
   },
   {
     symbol: "FARTCOIN",
@@ -26,11 +25,11 @@ export const TOKENS = [
   },
   {
     symbol: "RAY",
-    address: "4k3Dyjzvzp8eMZWUXbxxxxxxxxxxxxxxxxxxxx", // replace with real mint
+    address: "4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R",
   },
   {
     symbol: "RENDER",
-    address: "rndrizKT3Mxxxxxxxxxxxxxxxxxxxxxxxxxxxx", // replace with real mint
+    address: "rndrizKT3MK1iimdxRdWabcF7Zg7AR5T4nud4EkHBof",
   },
 ];
 
