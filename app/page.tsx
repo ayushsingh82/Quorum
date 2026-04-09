@@ -24,42 +24,16 @@ const trackedTokens = ["SOL", "JTO", "GRASS", "PYTH", "WIF", "FARTCOIN", "RAY", 
 export default function LandingPage() {
   return (
     <main className="min-h-screen bg-black text-white">
-      <header className="border-b border-green-900/60 bg-[#050505]">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
-          <div>
-            <h1 className="text-2xl font-semibold tracking-wide text-green-400">
-              SolScreener
-            </h1>
-            <p className="mt-1 text-sm text-zinc-500">
-              AI-powered Solana market intelligence
-            </p>
-          </div>
-
-          <nav className="hidden items-center gap-3 md:flex">
-            <Link
-              href="/dashboard"
-              className="border border-green-800 px-4 py-2 text-sm text-white transition hover:border-green-500 hover:text-green-400"
-            >
-              Dashboard
-            </Link>
-            <Link
-              href="/alerts"
-              className="border border-zinc-800 px-4 py-2 text-sm text-zinc-300 transition hover:border-green-500 hover:text-green-400"
-            >
-              Alerts
-            </Link>
-          </nav>
-        </div>
-      </header>
+      
 
       <section className="border-b border-green-900/40">
         <div className="mx-auto grid max-w-7xl gap-8 px-6 py-16 lg:grid-cols-[1.2fr_0.8fr] lg:items-center lg:py-24">
           <div>
             <p className="text-xs uppercase tracking-[0.25em] text-zinc-500">
-              Solana trading agent
+              Solana trading agents
             </p>
             <h2 className="mt-4 max-w-4xl text-4xl font-semibold leading-tight text-white md:text-6xl">
-              Find the <span className="text-green-400">best Solana setup</span> across
+              Find the <span className="text-green-400">best Solana ecosystem tokens</span> across
               multiple timeframes.
             </h2>
             <p className="mt-6 max-w-2xl text-base leading-7 text-zinc-300">
