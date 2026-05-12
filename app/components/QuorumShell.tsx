@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 import Dither from "./Dither";
+import QuorumLogo from "./QuorumLogo";
 
 type NavSection = { label: string; items: { href: string; label: string }[] };
 
@@ -12,6 +13,7 @@ const NAV: NavSection[] = [
     label: "Council",
     items: [
       { href: "/dashboard", label: "Council Floor" },
+      { href: "/ask", label: "Ask Coordinator" },
       { href: "/reasoning", label: "Reasoning Log" },
       { href: "/agents", label: "Agents" },
     ],
@@ -21,6 +23,7 @@ const NAV: NavSection[] = [
     items: [
       { href: "/signals", label: "Signals" },
       { href: "/tokens", label: "Tokens" },
+      { href: "/trending", label: "Trending" },
       { href: "/symbol/SOL", label: "Token Detail" },
       { href: "/alerts", label: "Alerts" },
     ],
@@ -34,6 +37,8 @@ const TITLES: Record<string, { title: string; subtitle: string }> = {
   "/tokens": { title: "Tokens", subtitle: "Solana ecosystem · live DexScreener feed" },
   "/alerts": { title: "Alert Stream", subtitle: "Council-driven triggers" },
   "/signals": { title: "Signals", subtitle: "Aggregate market overview" },
+  "/ask": { title: "Ask Coordinator", subtitle: "Natural-language Q&A with the swarm" },
+  "/trending": { title: "Trending", subtitle: "Boosted Solana tokens · discovery" },
 };
 
 function resolveTitle(pathname: string | null) {
@@ -57,16 +62,14 @@ export default function QuorumShell({ children }: { children: ReactNode }) {
     <div className="min-h-screen bg-black text-white">
       <aside className="fixed left-0 top-0 hidden h-screen w-64 flex-col border-r border-zinc-900 bg-[#050505] lg:flex">
         <Link href="/" className="block border-b border-zinc-900 px-6 py-6">
-          <div className="flex items-center gap-2">
-            <span className="grid h-8 w-8 place-items-center border border-emerald-500/60 bg-black/50 font-mono text-sm font-semibold text-emerald-300">
-              Q
-            </span>
+          <div className="flex items-center gap-3">
+            <QuorumLogo size={32} className="text-emerald-300" />
             <span className="font-mono text-sm font-semibold tracking-[0.28em] text-emerald-300">
               QUORUM
             </span>
           </div>
           <p className="mt-3 text-[11px] uppercase tracking-[0.22em] text-zinc-500">
-            Solana agent council
+            Solana agent swarm
           </p>
         </Link>
         <nav className="flex-1 overflow-y-auto px-3 py-5">
