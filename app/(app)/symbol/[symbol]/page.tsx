@@ -1,9 +1,14 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { TOKENS, TIMEFRAMES } from "@/src/config/tokens";
-import { fetchLiveTokenData } from "@/src/services/marketData";
-import { analyzeTimeframe } from "@/src/lib/indicators";
+import { WATCHED_TOKENS as TOKENS } from "@/lib/quorum/tokens";
+import { fetchCandles, fetchDexPair, analyzeTimeframe } from "@/lib/quorum/market";
+
+const TIMEFRAMES = [
+  { label: "1h" as const, type: "1H" as const },
+  { label: "4h" as const, type: "4H" as const },
+  { label: "1d" as const, type: "1D" as const },
+];
 import TradingViewChart from "./TradingViewChart";
 
 type PageProps = {
@@ -94,15 +99,13 @@ export default async function SymbolPage({ params }: PageProps) {
   const tfRows = await Promise.all(
     TIMEFRAMES.map(async (tf) => {
       try {
-        const { candles } = await fetchLiveTokenData(
-          token.address,
-          tf.label as "1h" | "4h" | "1d",
-          primary?.pairAddress
-        );
+        const pool = primary?.pairAddress ?? (await fetchDexPair(token.address))?.pairAddress;
+        if (!pool) return { tf, analysis: null, latest: null };
+        const candles = await fetchCandles(pool, tf.label, 120);
         const closes = candles.map((c) => c.c);
         const volumes = candles.map((c) => c.v);
         const analysis = analyzeTimeframe(closes, volumes);
-        const latest = candles.at(-1);
+        const latest = candles.at(-1) ?? null;
         return { tf, analysis, latest };
       } catch {
         return { tf, analysis: null, latest: null };

@@ -109,6 +109,67 @@ export function rsi(values: number[], period = 14): number {
   return avgLoss === 0 ? 100 : 100 - 100 / (1 + avgGain / avgLoss);
 }
 
+export type TimeframeAnalysis = {
+  price: number;
+  ema9: number;
+  ema21: number;
+  rsi14: number;
+  trend: "bullish" | "bearish" | "neutral";
+  momentum: "strong" | "moderate" | "weak" | "mixed" | "overbought-watch" | "oversold-watch";
+  volumeBoost: boolean;
+  score: number;
+};
+
+export function analyzeTimeframe(closes: number[], volumes: number[]): TimeframeAnalysis | null {
+  if (closes.length < 22) return null;
+  const ema9Series = ema(closes, 9);
+  const ema21Series = ema(closes, 21);
+  const lastEma9 = ema9Series.at(-1)!;
+  const lastEma21 = ema21Series.at(-1)!;
+  const lastRsi = rsi(closes, 14);
+  const lastPrice = closes.at(-1)!;
+  const lastVolume = volumes.at(-1) ?? 0;
+  const avgVolume20 =
+    volumes.slice(-20).reduce((a, b) => a + b, 0) / Math.max(1, Math.min(20, volumes.length));
+  const volumeBoost = lastVolume > avgVolume20 * 1.15;
+
+  let trend: TimeframeAnalysis["trend"] = "neutral";
+  let momentum: TimeframeAnalysis["momentum"] = "mixed";
+  let score = 50;
+
+  if (lastEma9 > lastEma21 && lastPrice > lastEma21 && lastRsi >= 50 && lastRsi <= 68) {
+    trend = "bullish";
+    momentum = volumeBoost ? "strong" : "moderate";
+    score = 70 + Math.min(20, (lastRsi - 50) * 1.2) + (volumeBoost ? 8 : 0);
+  } else if (lastEma9 < lastEma21 && lastPrice < lastEma21 && lastRsi >= 32 && lastRsi < 50) {
+    trend = "bearish";
+    momentum = volumeBoost ? "strong" : "moderate";
+    score = 70 + Math.min(20, (50 - lastRsi) * 1.2) + (volumeBoost ? 8 : 0);
+  } else if (lastEma9 > lastEma21 && lastRsi > 68) {
+    trend = "bullish";
+    momentum = "overbought-watch";
+    score = 62;
+  } else if (lastEma9 < lastEma21 && lastRsi < 32) {
+    trend = "bearish";
+    momentum = "oversold-watch";
+    score = 62;
+  } else {
+    momentum = "weak";
+    score = 45;
+  }
+
+  return {
+    price: Number(lastPrice.toFixed(6)),
+    ema9: Number(lastEma9.toFixed(6)),
+    ema21: Number(lastEma21.toFixed(6)),
+    rsi14: Number(lastRsi.toFixed(2)),
+    trend,
+    momentum,
+    volumeBoost,
+    score: Math.max(0, Math.min(100, Math.round(score))),
+  };
+}
+
 export function realizedVolatility(closes: number[]): number {
   if (closes.length < 3) return 0;
   const rets: number[] = [];

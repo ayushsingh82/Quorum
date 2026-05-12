@@ -190,9 +190,11 @@ my-app/
 │   ├── tokens.ts                         Solana watchlist (20+ tokens, 8 sectors)
 │   ├── search.ts                         DexScreener search + resolver
 │   ├── history.ts                        Session verdict ring buffer
+│   ├── ask.ts                            Coordinator Q&A with market context
+│   ├── trending.ts                       DexScreener token-boost discovery
 │   ├── types.ts                          Domain types
 │   └── useLiveData.ts                    Polling hook for client components
-└── src/                                  ElizaOS plugin entry (legacy SolScreener)
+└── deploy.ts                             Nosana deployment script (@nosana/kit)
 ```
 
 ---
