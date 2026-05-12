@@ -6,19 +6,22 @@ export const dynamic = "force-dynamic";
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
-  const symbol = searchParams.get("symbol") ?? "SOL";
-  return convene(symbol);
+  const query =
+    searchParams.get("symbol") ?? searchParams.get("address") ?? searchParams.get("q") ?? "SOL";
+  return convene(query);
 }
 
 export async function POST(req: Request) {
-  let symbol = "SOL";
+  let query = "SOL";
   try {
     const body = await req.json();
-    if (typeof body?.symbol === "string") symbol = body.symbol;
+    if (typeof body?.symbol === "string") query = body.symbol;
+    else if (typeof body?.address === "string") query = body.address;
+    else if (typeof body?.q === "string") query = body.q;
   } catch {
     // ignore
   }
-  return convene(symbol);
+  return convene(query);
 }
 
 async function convene(symbol: string) {

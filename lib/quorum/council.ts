@@ -3,6 +3,8 @@ import { runAllAgents } from "./agents";
 import { fetchDexPair, fetchCandles } from "./market";
 import { summarizeCouncil } from "./ai";
 import { findToken } from "./tokens";
+import { resolveToken } from "./search";
+import { recordVerdict } from "./history";
 
 const VOTE_SCORE: Record<CouncilVote, number> = { BUY: 1, HOLD: 0, AVOID: -1 };
 
@@ -63,10 +65,13 @@ function fallbackRationale(agents: AgentVote[], verdict: CouncilVote): string {
   return `Council split — no agent reached majority confidence. Default verdict: ${verdict}.`;
 }
 
-export async function runCouncil(symbol: string): Promise<CouncilVerdict> {
-  const token = findToken(symbol);
+export async function runCouncil(query: string): Promise<CouncilVerdict> {
+  const local = findToken(query);
+  const token = local
+    ? { symbol: local.symbol, address: local.address }
+    : await resolveToken(query);
   if (!token) {
-    throw new Error(`Unknown token symbol: ${symbol}`);
+    throw new Error(`Unknown Solana token: ${query}`);
   }
   const pair = await fetchDexPair(token.address);
   const candles = pair?.pairAddress
@@ -102,7 +107,7 @@ export async function runCouncil(symbol: string): Promise<CouncilVerdict> {
     source = pair ? "ai-fallback" : "mock";
   }
 
-  return {
+  const result: CouncilVerdict = {
     symbol: token.symbol,
     address: token.address,
     verdict,
@@ -115,4 +120,6 @@ export async function runCouncil(symbol: string): Promise<CouncilVerdict> {
     generatedAt: Date.now(),
     source,
   };
+  recordVerdict(result);
+  return result;
 }

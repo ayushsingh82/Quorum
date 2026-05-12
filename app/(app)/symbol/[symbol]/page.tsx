@@ -113,7 +113,7 @@ export default async function SymbolPage({ params }: PageProps) {
   const trendUp = Number(primary?.priceChange?.h24 ?? 0) >= 0;
 
   return (
-    <main className="min-h-screen bg-black text-white">
+    <>
       <div className="mx-auto max-w-7xl px-4 py-6 md:px-6 lg:px-8">
         <section className="mb-5 flex flex-wrap gap-2">
           {TOKENS.map((t) => (
@@ -344,7 +344,7 @@ export default async function SymbolPage({ params }: PageProps) {
           </Panel>
         </section>
       </div>
-    </main>
+    </>
   );
 }
 
