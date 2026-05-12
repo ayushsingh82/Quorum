@@ -1,0 +1,42 @@
+import { NextResponse } from "next/server";
+import { runCouncil } from "@/lib/quorum/council";
+import type { ApiEnvelope, CouncilVerdict } from "@/lib/quorum/types";
+
+export const dynamic = "force-dynamic";
+
+export async function GET(req: Request) {
+  const { searchParams } = new URL(req.url);
+  const symbol = searchParams.get("symbol") ?? "SOL";
+  return convene(symbol);
+}
+
+export async function POST(req: Request) {
+  let symbol = "SOL";
+  try {
+    const body = await req.json();
+    if (typeof body?.symbol === "string") symbol = body.symbol;
+  } catch {
+    // ignore
+  }
+  return convene(symbol);
+}
+
+async function convene(symbol: string) {
+  try {
+    const verdict = await runCouncil(symbol);
+    const env: ApiEnvelope<CouncilVerdict> = {
+      ok: true,
+      data: verdict,
+      source: verdict.source,
+      generatedAt: verdict.generatedAt,
+    };
+    return NextResponse.json(env);
+  } catch (e) {
+    const env: ApiEnvelope<CouncilVerdict> = {
+      ok: false,
+      error: e instanceof Error ? e.message : "council failed",
+      generatedAt: Date.now(),
+    };
+    return NextResponse.json(env, { status: 400 });
+  }
+}
