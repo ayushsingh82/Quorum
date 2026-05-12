@@ -305,10 +305,11 @@ export default function SignalsPage() {
                     border: "1px solid #18181b",
                     fontSize: 11,
                   }}
-                  formatter={(v: number, n: string) => [`${v}`, n]}
-                  labelFormatter={(_, payload) =>
-                    payload?.[0]?.payload?.symbol ?? ""
-                  }
+                  formatter={(v, n) => [`${v}`, `${n}`]}
+                  labelFormatter={(_, payload) => {
+                    const p = payload?.[0]?.payload as { symbol?: string } | undefined;
+                    return p?.symbol ?? "";
+                  }}
                 />
                 <Scatter data={scatter}>
                   {scatter.map((p, i) => (
